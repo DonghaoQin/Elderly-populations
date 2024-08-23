@@ -9,7 +9,7 @@ const formData = ref({
   password: '',
   confirmPassword: '',
   isAustralian: false,
-  
+  reason: '',
   gender: '',
   suburb: 'Clayton'
 })
@@ -32,7 +32,7 @@ const clearForm = () => {
     username: '',
     password: '',
     isAustralian: false,
-    
+    reason: '',
     gender: ''
   }
 }
@@ -43,7 +43,7 @@ const errors = ref({
   confirmPassword: null,
   resident: null,
   gender: null,
-
+  reason: null
 })
 
 
@@ -104,9 +104,11 @@ const validatePassword = (blur) => {
 
 
 
-const validateReason = () => {
+  const validateReason = () => {
   const reason = formData.value.reason;
 
+
+  
   
   if (reason.length < 10) {
     errors.value.reason = 'Reason must be at least 10 characters long.';
@@ -116,7 +118,6 @@ const validateReason = () => {
     errors.value.reason = null; 
   }
 }
-
 
 
 </script>
