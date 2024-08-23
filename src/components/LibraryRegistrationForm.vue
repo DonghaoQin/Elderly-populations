@@ -9,7 +9,7 @@ const formData = ref({
   password: '',
   confirmPassword: '',
   isAustralian: false,
-  reason: '',
+  
   gender: '',
   suburb: 'Clayton'
 })
@@ -32,7 +32,7 @@ const clearForm = () => {
     username: '',
     password: '',
     isAustralian: false,
-    reason: '',
+    
     gender: ''
   }
 }
@@ -43,7 +43,7 @@ const errors = ref({
   confirmPassword: null,
   resident: null,
   gender: null,
-  reason: null
+
 })
 
 
@@ -122,11 +122,11 @@ const validateReason = () => {
 </script>
 
 <template>
-  <!-- 🗄️ W3. Library Registration Form -->
+
   <div class="container mt-5">
     <div class="row">
       <div class="col-md-8 offset-md-2">
-        <h1 class="text-center">🗄️ W5. Library Registration Form</h1>
+        <h1 class="text-center">🗄️ Elder population</h1>
         <p class="text-center">
           This form now includes validation. Registered users are displayed in a data table below
           (PrimeVue).
