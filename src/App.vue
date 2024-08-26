@@ -1,45 +1,38 @@
-<script setup>
-import JSONLab from './components/JSONLab.vue'
-// import BHeader from './components/BHeader.vue'
-import LibraryRegistrationForm from './components/LibraryRegistrationForm.vue'
-</script>
-
 <template>
-  <header>
-    <BHeader />
-  </header>
-
-  <main>
-    <LibraryRegistrationForm />
-    <!-- <JSONLab /> -->
-  </main>
+  <div id="app">
+    <header>
+      <nav>
+        <ul>
+          <li><router-link to="/register">Register</router-link></li>
+          <li><router-link to="/login">Login</router-link></li> 
+        </ul>
+      </nav>
+    </header>
+    <router-view />
+  </div>
 </template>
 
+<script setup>
+
+</script>
+
 <style scoped>
-/* header {
-  line-height: 1.5;
+nav ul {
+  list-style-type: none;
+  padding: 0;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+nav ul li {
+  display: inline;
+  margin-right: 20px;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-} */
+nav ul li a:hover {
+  text-decoration: underline;
+}
 </style>
