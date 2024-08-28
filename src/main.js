@@ -8,8 +8,10 @@ import Aura from '@primevue/themes/aura';
 import { createRouter, createWebHistory } from 'vue-router';
 import Register from './components/register.vue';
 import Login from './components/login.vue';
+import Homepage from './components/homepage.vue';  // Import the Homepage component
 
 const routes = [
+  { path: '/', component: Homepage },  // Add the route for Homepage
   { path: '/register', component: Register },
   { path: '/login', component: Login }
 ];
