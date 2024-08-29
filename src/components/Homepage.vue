@@ -7,18 +7,18 @@
       </div>
       <nav class="navbar-menu">
         <router-link to="/">Home</router-link>
-        <router-link to="/services">Services</router-link>
+        <router-link to="/service">Services</router-link>
         <router-link to="/team">Team</router-link>
-        <router-link to="/blog">Blog</router-link>
-        <router-link to="/contact">Contact</router-link>
-        <router-link to="/login" class="navbar-item">Login</router-link>
-        <router-link to="/register" class="button is-primary">Get Started</router-link>
+        <!-- Removed Blog and Contact -->
+        <router-link v-if="!isAuthenticated" to="/login" class="navbar-item">Login</router-link>
+        <router-link v-if="!isAuthenticated" to="/register" class="button is-primary">Get Started</router-link>
+        <button v-if="isAuthenticated" @click="logout" class="navbar-item">Logout</button>
       </nav>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero is-fullheight is-primary is-bold">
-      <div class="hero-body" style="background-image: url('@/assets/talk.jpg'); background-size: cover;">
+    <section class="hero is-fullheight is-primary is-bold" style="background-color: #add8e6;">
+      <div class="hero-body">
         <div class="container has-text-centered">
           <h1 class="title">
             Introducing Clove, a mental health collective.
@@ -66,19 +66,34 @@
           </div>
         </div>
         <div class="button-container">
-          <button class="learn-more-button">Learn More</button>
+          <router-link to="/service">
+            <button class="learn-more-button">Learn More</button>
+          </router-link>
         </div>
       </div>
     </section>
-
-    
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Homepage',
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const isAuthenticated = ref(false);
+
+const checkAuthentication = () => {
+  const user = localStorage.getItem('authenticatedUser');
+  isAuthenticated.value = !!user; // Converts the result to a boolean
 };
+
+const logout = () => {
+  localStorage.removeItem('authenticatedUser');
+  isAuthenticated.value = false;
+  router.push('/');  // Redirect to homepage after logout
+};
+
+checkAuthentication();
 </script>
 
 <style scoped>
@@ -100,7 +115,7 @@ export default {
 }
 
 .button.is-primary {
-  background-color: #FF6347;
+  background-color: #f7eae8;
   color: #ffffff;
   border-radius: 5px;
   padding: 10px 20px;
@@ -173,7 +188,6 @@ export default {
 }
 
 /* Our Services Section */
-/* Our Services Section */
 .our-services {
   padding: 100px 20px;
   background-color: #3e4d4a;
@@ -228,6 +242,5 @@ export default {
 .learn-more-button:hover {
   background-color: #c57878;
 }
-
-
 </style>
+

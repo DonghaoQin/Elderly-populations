@@ -1,18 +1,28 @@
 <template>
   <div class="full-page-container">
+    <!-- Back to Homepage button in the top-left corner -->
+    <button class="btn-back" @click="goToHomepage">Back to Homepage</button>
+
     <div class="container">
       <div class="card p-4 shadow-sm">
-        <h1 class="text-center mb-4 text-primary">Elderly populations</h1>
+        <h1 class="text-center mb-4 text-primary">Elderly Populations</h1>
         <form @submit.prevent="submitLoginForm">
+          <!-- Input field with datalist for registered emails -->
           <div class="mb-3">
             <input
-              type="text"
+              list="emails"
               class="form-control"
               id="username"
               placeholder="Enter your email"
               v-model="loginData.username"
+              @input="fillPassword"
               required
             />
+            <datalist id="emails">
+              <option v-for="user in users" :key="user.email" :value="user.email">
+                {{ user.email }}
+              </option>
+            </datalist>
             <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
           </div>
 
@@ -46,85 +56,136 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-const router = useRouter()
+const router = useRouter();
 
+const users = ref([]);
 const loginData = ref({
   username: '',
   password: ''
-})
+});
 
 const errors = ref({
   username: null,
   password: null
-})
+});
 
-const loginError = ref(null)
+const loginError = ref(null);
+
+// Load users from localStorage
+const loadUsers = () => {
+  users.value = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+};
+
+// Auto-fill password based on the selected email
+const fillPassword = () => {
+  const selectedUser = users.value.find(user => user.email === loginData.value.username);
+  if (selectedUser) {
+    loginData.value.password = selectedUser.password;
+  } else {
+    loginData.value.password = ''; // Clear the password field if the email doesn't match any user
+  }
+};
 
 const validateEmail = (email) => {
-  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-  return re.test(String(email).toLowerCase())
-}
+  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return re.test(String(email).toLowerCase());
+};
 
 const validateLoginForm = () => {
-  errors.value.username = null
-  errors.value.password = null
-  loginError.value = null
+  errors.value.password = null;
+  loginError.value = null;
 
-  let isValid = true
+  let isValid = true;
 
   if (!validateEmail(loginData.value.username)) {
-    errors.value.username = 'Enter wrong email address'
-    isValid = false
+    errors.value.username = 'Enter a valid email address';
+    isValid = false;
   }
 
   if (loginData.value.password.length < 8) {
-    errors.value.password = 'Password must be at least 8 characters long.'
-    isValid = false
+    errors.value.password = 'Password must be at least 8 characters long.';
+    isValid = false;
   }
 
-  return isValid
-}
+  return isValid;
+};
 
 const submitLoginForm = () => {
   if (validateLoginForm()) {
-    // Handle successful form submission
+    localStorage.setItem('authenticatedUser', loginData.value.username); // Store the logged-in user
+    loginError.value = null; // Reset any previous login error
+    
+    // Redirect to service page after successful login
+    router.push('/service');
+  } else {
+    loginError.value = 'Invalid login credentials';
   }
-}
+};
 
 const goToRegister = () => {
-  router.push('/register')
-}
+  router.push('/register');
+};
+
+const goToHomepage = () => {
+  router.push('/');
+};
+
+// Load users on component mount
+loadUsers();
 </script>
 
+
+
+
+
+
+
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 body {
+  font-family: 'Roboto', sans-serif;
   background-color: #f0f2f5;
   margin: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 0;
 }
 
 .full-page-container {
-  width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  background-image: linear-gradient(to right, #4facfe, #00f2fe);
+  position: relative;
 }
 
 .container {
-  max-width: 400px;
+  max-width: 500px;
+  width: 100%;
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.card {
-  border-radius: 10px;
-  padding: 20px;
-  background-color: #fff;
+.btn-back {
+  position: fixed; /* Fixed positioning to keep it in the top-left corner */
+  top: 20px;
+  left: 20px;
+  background-color: transparent;
+  border: none;
+  font-size: 1rem;
+  color: #FF6F61; /* Coral-like color */
+  cursor: pointer;
+  text-decoration: underline;
+  z-index: 1000; /* Ensure it stays above other elements */
+}
+
+.btn-back:hover {
+  color: #FF4B47; /* Darker coral on hover */
 }
 
 .text-primary {
@@ -166,10 +227,10 @@ body {
 
 .btn-success:hover {
   background-color: #36a420;
-  border-color: #36a420;
 }
 
-.text-muted {
-  color: #6c757d !important;
+.text-danger {
+  font-size: 0.9rem;
+  margin-top: 5px;
 }
 </style>

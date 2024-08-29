@@ -1,7 +1,101 @@
+<template>
+  <div class="full-page-container">
+    <!-- Ensure the Back to Login button is positioned in the top-left corner of the viewport -->
+    <button class="btn-back" @click="goToLogin">Back to Login</button>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 offset-md-2">
+          <h1 class="text-center">Elder Population</h1>
+          <p class="text-center">Please register your account.</p>
+
+          <!-- Show success message after registration -->
+          <div v-if="registrationSuccess" class="alert alert-success">
+            Register succeed!
+          </div>
+
+          <form @submit.prevent="submitForm">
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                @blur="() => validateName(true)"
+                @input="() => validateName(false)"
+                v-model="formData.username"
+              />
+              <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                @blur="() => validateEmail(true)"
+                @input="() => validateEmail(false)"
+                v-model="formData.email"
+              />
+              <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                v-model="formData.password"
+              />
+              <div v-if="errors.password" class="text-danger">
+                {{ errors.password }}
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="confirm-password" class="form-label">Confirm Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="confirm-password"
+                v-model="formData.confirmPassword"
+                @blur="() => validateConfirmPassword(true)"
+              />
+              <div v-if="errors.confirmPassword" class="text-danger">
+                {{ errors.confirmPassword }}
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  id="isAustralian"
+                  v-model="formData.isAustralian"
+                />
+                <label class="form-check-label" for="isAustralian">Australian Resident?</label>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary me-2">Submit</button>
+              <button type="button" class="btn btn-secondary" @click="clearForm">Clear</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
-import { ref, computed } from 'vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const formData = ref({
   username: '',
@@ -13,17 +107,10 @@ const formData = ref({
 });
 
 const submittedCards = ref([]);
+const registrationSuccess = ref(false);
 
-const submitForm = () => {
-  validateName(true);
-  validateEmail(true);
-  validatePassword(true);
-  validateConfirmPassword(true);
-
-  if (!errors.value.username && !errors.value.email && !errors.value.password && !errors.value.confirmPassword) {
-    submittedCards.value.push({ ...formData.value });
-    clearForm();
-  }
+const goToLogin = () => {
+  router.push('/login');
 };
 
 const clearForm = () => {
@@ -46,145 +133,67 @@ const errors = ref({
   gender: null
 });
 
-const validateName = (blur) => {
+const validateForm = () => {
+  let isValid = true;
+
   if (formData.value.username.length < 3) {
-    if (blur) errors.value.username = 'Name must be at least 3 characters';
+    errors.value.username = 'Username must be at least 3 characters';
+    isValid = false;
   } else {
     errors.value.username = null;
   }
-};
 
-const validateEmail = (blur) => {
-  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  if (!re.test(formData.value.email)) {
-    if (blur) errors.value.email = 'Enter wrong email address';
+  if (!validateEmail(formData.value.email)) {
+    errors.value.email = 'Please enter a valid email address';
+    isValid = false;
   } else {
     errors.value.email = null;
   }
-};
 
-const validatePassword = (blur) => {
-  const password = formData.value.password;
-  const minLength = 8;
-  const hasUppercase = /[A-Z]/.test(password);
-  const hasLowercase = /[a-z]/.test(password);
-  const hasNumber = /\d/.test(password);
-  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-  if (password.length < minLength) {
-    if (blur) errors.value.password = `Password must be at least ${minLength} characters long.`;
-  } else if (!hasUppercase) {
-    if (blur) errors.value.password = 'Password must contain at least one uppercase letter.';
-  } else if (!hasLowercase) {
-    if (blur) errors.value.password = 'Password must contain at least one lowercase letter.';
-  } else if (!hasNumber) {
-    if (blur) errors.value.password = 'Password must contain at least one number.';
-  } else if (!hasSpecialChar) {
-    if (blur) errors.value.password = 'Password must contain at least one special character.';
+  if (formData.value.password.length < 8) {
+    errors.value.password = 'Password must be at least 8 characters';
+    isValid = false;
+  } else if (formData.value.password !== formData.value.confirmPassword) {
+    errors.value.confirmPassword = 'Passwords do not match';
+    isValid = false;
   } else {
     errors.value.password = null;
+    errors.value.confirmPassword = null;
   }
+
+  return isValid;
 };
 
-const validateConfirmPassword = (blur) => {
-  if (formData.value.password !== formData.value.confirmPassword) {
-    if (blur) errors.value.confirmPassword = 'Passwords do not match.';
-  } else {
-    errors.value.confirmPassword = null;
+const validateEmail = (email) => {
+  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return re.test(String(email).toLowerCase());
+};
+
+const submitForm = () => {
+  if (validateForm()) {
+    // Retrieve existing users from localStorage
+    let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+
+    // Add new user to the list
+    const newUser = {
+      email: formData.value.email,
+      password: formData.value.password
+    };
+
+    users.push(newUser);
+    localStorage.setItem('registeredUsers', JSON.stringify(users));
+
+    registrationSuccess.value = true;
+
+    // Redirect to login page after successful registration
+    setTimeout(() => {
+      router.push('/login');
+    }, 1000);
+
+    clearForm();
   }
 };
 </script>
-
-
-<template>
-  <div class="full-page-container">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-8 offset-md-2">
-          <h1 class="text-center">Elder population</h1>
-          <p class="text-center">Please register your account.</p>
-          <form @submit.prevent="submitForm">
-            <div class="row mb-3">
-              <div class="col-md-6 col-sm-6">
-                <label for="username" class="form-label">Username</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="username"
-                  @blur="() => validateName(true)"
-                  @input="() => validateName(false)"
-                  v-model="formData.username"
-                />
-                <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
-              </div>
-            
-              <div class="col-md-6 col-sm-6">
-                <label for="email" class="form-label">Email</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email"
-                  @blur="() => validateEmail(true)"
-                  @input="() => validateEmail(false)"
-                  v-model="formData.email"
-                />
-                <div v-if="errors.email" class="text-danger">{{ errors.email }}</div>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-md-6 col-sm-6">
-                <label for="password" class="form-label">Password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  v-model="formData.password"
-                />
-                <div v-if="errors.password" class="text-danger">
-                  {{ errors.password }}
-                </div>
-              </div>
-
-              <div class="col-md-6 col-sm-6">
-                <label for="confirm-password" class="form-label">Confirm password</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  id="confirm-password"
-                  v-model="formData.confirmPassword"
-                  @blur="() => validateConfirmPassword(true)"
-                />
-                <div v-if="errors.confirmPassword" class="text-danger">
-                  {{ errors.confirmPassword }}
-                </div>
-              </div>
-            </div>
-
-            <div class="row mb-3">
-              <div class="col-md-6 col-sm-6">
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="isAustralian"
-                    v-model="formData.isAustralian"
-                  />
-                  <label class="form-check-label" for="isAustralian">Australian Resident?</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="text-center">
-              <button type="submit" class="btn btn-primary me-2">Submit</button>
-              <button type="button" class="btn btn-secondary" @click="clearForm">Clear</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
@@ -202,6 +211,7 @@ body {
   align-items: center;
   height: 100vh;
   background-image: linear-gradient(to right, #4facfe, #00f2fe);
+  position: relative;
 }
 
 .container {
@@ -213,6 +223,28 @@ body {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
+.btn-back {
+  position: fixed; /* Fixed positioning to keep it in the top-left corner */
+  top: 20px;
+  left: 20px;
+  background-color: transparent;
+  border: none;
+  font-size: 1rem;
+  color: #f0e662;
+  cursor: pointer;
+  text-decoration: underline;
+  z-index: 1000; /* Ensure it stays above other elements */
+}
+
+.alert-success {
+  margin-bottom: 15px;
+  color: #155724;
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  padding: 10px;
+  border-radius: 5px;
+}
+
 h1 {
   font-size: 2rem;
   font-weight: 500;
@@ -221,39 +253,20 @@ h1 {
   text-align: center;
 }
 
-p {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.form-label {
-  font-weight: 500;
-  color: #444;
-}
-
 .form-control {
   height: 45px;
   padding: 10px;
   font-size: 1rem;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #ced4da;
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-control:focus {
   border-color: #4facfe;
   box-shadow: 0 0 8px rgba(79, 172, 254, 0.3);
-}
-
-.form-check-input {
-  margin-top: 10px;
-}
-
-.text-danger {
-  font-size: 0.9rem;
-  margin-top: 5px;
 }
 
 .btn-primary, .btn-secondary {
@@ -282,11 +295,5 @@ p {
 
 .btn-secondary:hover {
   background-color: #e0e2e5;
-}
-
-@media (max-width: 768px) {
-  .container {
-    max-width: 90%;
-  }
 }
 </style>
