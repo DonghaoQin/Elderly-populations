@@ -1,44 +1,46 @@
 <template>
-  <div class="container mt-5">
-    <div class="card p-4 shadow-sm">
-      <h1 class="text-center mb-4 text-primary">Elderly populations</h1>
-      <form @submit.prevent="submitLoginForm">
-        <div class="mb-3">
-          <input
-            type="text"
-            class="form-control"
-            id="username"
-            placeholder="Enter your email"
-            v-model="loginData.username"
-            required
-          />
-          <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
-        </div>
+  <div class="full-page-container">
+    <div class="container">
+      <div class="card p-4 shadow-sm">
+        <h1 class="text-center mb-4 text-primary">Elderly populations</h1>
+        <form @submit.prevent="submitLoginForm">
+          <div class="mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="username"
+              placeholder="Enter your email"
+              v-model="loginData.username"
+              required
+            />
+            <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
+          </div>
 
-        <div class="mb-3">
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            placeholder="Enter your password"
-            v-model="loginData.password"
-            required
-          />
-          <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
-        </div>
+          <div class="mb-3">
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              placeholder="Enter your password"
+              v-model="loginData.password"
+              required
+            />
+            <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
+          </div>
 
-        <div class="text-center mt-4">
-          <button type="submit" class="btn btn-primary btn-block">Login</button>
-        </div>
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary">Login</button>
+          </div>
 
-        <div class="text-center mt-4">
-          <button type="button" class="btn btn-success btn-block" @click="goToRegister">Register</button>
-        </div>
+          <div class="text-center mt-4">
+            <button type="button" class="btn btn-success" @click="goToRegister">Register</button>
+          </div>
 
-        <div v-if="loginError" class="text-danger text-center mt-3">
-          {{ loginError }}
-        </div>
-      </form>
+          <div v-if="loginError" class="text-danger text-center mt-3">
+            {{ loginError }}
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -61,6 +63,11 @@ const errors = ref({
 
 const loginError = ref(null)
 
+const validateEmail = (email) => {
+  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+  return re.test(String(email).toLowerCase())
+}
+
 const validateLoginForm = () => {
   errors.value.username = null
   errors.value.password = null
@@ -68,8 +75,8 @@ const validateLoginForm = () => {
 
   let isValid = true
 
-  if (loginData.value.username.length < 3) {
-    errors.value.username = 'Username must be at least 3 characters long.'
+  if (!validateEmail(loginData.value.username)) {
+    errors.value.username = 'Enter wrong email address'
     isValid = false
   }
 
@@ -92,15 +99,26 @@ const goToRegister = () => {
 }
 </script>
 
-
 <style scoped>
 body {
   background-color: #f0f2f5;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.full-page-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .container {
   max-width: 400px;
-  margin: auto;
 }
 
 .card {
@@ -120,6 +138,7 @@ body {
   font-size: 1rem;
   border-radius: 5px;
   border: 1px solid #ced4da;
+  width: 100%;
 }
 
 .btn-primary {
