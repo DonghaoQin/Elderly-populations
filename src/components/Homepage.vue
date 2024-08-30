@@ -3,7 +3,7 @@
     <!-- Navigation Bar -->
     <header class="navbar">
       <div class="navbar-brand">
-        <h1>Your Site Title</h1>
+        <h1>Elderly Populations</h1>
       </div>
       <nav class="navbar-menu">
         <router-link to="/">Home</router-link>
