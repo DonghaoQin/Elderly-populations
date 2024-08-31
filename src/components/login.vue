@@ -89,16 +89,26 @@ const fillPassword = () => {
   }
 };
 
+// Sanitize input to prevent XSS
+const sanitizeInput = (input) => {
+  const element = document.createElement('div');
+  element.innerText = input;
+  return element.innerHTML;
+};
+
 const validateEmail = (email) => {
   const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   return re.test(String(email).toLowerCase());
 };
 
 const validateLoginForm = () => {
+  errors.value.username = null;
   errors.value.password = null;
   loginError.value = null;
 
   let isValid = true;
+
+  loginData.value.username = sanitizeInput(loginData.value.username);
 
   if (!validateEmail(loginData.value.username)) {
     errors.value.username = 'Enter a valid email address';
@@ -136,12 +146,6 @@ const goToHomepage = () => {
 // Load users on component mount
 loadUsers();
 </script>
-
-
-
-
-
-
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
