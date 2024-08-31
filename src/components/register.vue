@@ -150,8 +150,9 @@ const validateForm = () => {
     errors.value.email = null;
   }
 
-  if (formData.value.password.length < 8) {
-    errors.value.password = 'Password must be at least 8 characters';
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  if (!passwordPattern.test(formData.value.password)) {
+    errors.value.password = 'Password must be at least 8 characters and include at least one uppercase letter, one lowercase letter, one number, and one special character';
     isValid = false;
   } else if (formData.value.password !== formData.value.confirmPassword) {
     errors.value.confirmPassword = 'Passwords do not match';
