@@ -10,7 +10,7 @@
         <router-link to="/service">Services</router-link>
         <router-link to="/comment">Comment</router-link>
 
-        <!-- Removed Blog and Contact -->
+        
         <router-link v-if="!isAuthenticated" to="/login" class="navbar-item">Login</router-link>
         <router-link v-if="!isAuthenticated" to="/register" class="button is-primary">Get Started</router-link>
         <button v-if="isAuthenticated" @click="logout" class="navbar-item">Logout</button>

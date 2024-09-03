@@ -58,7 +58,7 @@ const newRating = ref(0);
 const submittedIndexes = ref([]);  // To track which comments have been rated
 
 const sanitize = (input) => {
-    const element = document.createElement('div');
+    const element = document.createElement('div'); //  sanitize data
     element.innerText = input;
     return element.innerHTML;
 };

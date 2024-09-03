@@ -7,7 +7,7 @@
     <div v-else>
       <button @click="goBack" class="btn btn-secondary">Back to Homepage</button>
       <p>This is your service</p>
-      
+    
       <!-- Add the information cards here -->
       <div class="info-cards">
         <div class="card">
