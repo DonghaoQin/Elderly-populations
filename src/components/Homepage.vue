@@ -9,6 +9,7 @@
         <router-link to="/">Home</router-link>
         <router-link to="/service">Services</router-link>
         <router-link to="/comment">Comment</router-link>
+        <router-link to="/email">Send Email</router-link> <!-- Added Send Email Link -->
         
         <router-link v-if="!isAuthenticated" to="/login" class="navbar-item">Login</router-link>
         <router-link v-if="!isAuthenticated" to="/register" class="button is-primary">Get Started</router-link>

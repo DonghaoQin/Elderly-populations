@@ -13,7 +13,7 @@ import Login from './components/login.vue';
 import Homepage from './components/homepage.vue';  // Import the Homepage component
 import Service from './components/service.vue';    // Import the Service component
 import Comment from './components/comment.vue';    // Import the Comment component
-
+import EmailForm from './components/EmailForm.vue';  // Import EmailForm.vue
 // Firebase configuration from your details
 const firebaseConfig = {
   apiKey: "AIzaSyDIRI3ZPjEgDefQWPbfV7zbGM_ZV36yBGI",
@@ -31,11 +31,12 @@ const auth = getAuth(firebaseApp);
 
 // Setup Vue Router with routes
 const routes = [
-  { path: '/', component: Homepage },  // Add the route for Homepage
+  { path: '/', component: Homepage },  
   { path: '/register', component: Register },
   { path: '/login', component: Login },
   { path: '/service', component: Service, meta: { requiresAuth: true } },
   { path: '/comment', component: Comment, meta: { requiresAuth: true } }, 
+  { path: '/email', component: EmailForm },  // Add EmailForm route
   { path: '/logout', component: Homepage }  // Logout redirects to Homepage
 ];
 
@@ -59,3 +60,5 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
+
