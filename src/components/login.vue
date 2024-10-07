@@ -7,25 +7,20 @@
       <div class="card p-4 shadow-sm">
         <h1 class="text-center mb-4 text-primary">Elderly Populations</h1>
         <form @submit.prevent="submitLoginForm">
-          <!-- Input field with datalist for registered emails -->
+          <!-- Input field for email -->
           <div class="mb-3">
             <input
-              list="emails"
+              type="email"
               class="form-control"
               id="username"
               placeholder="Enter your email"
               v-model="loginData.username"
-              @input="fillPassword"
               required
             />
-            <datalist id="emails">
-              <option v-for="user in users" :key="user.email" :value="user.email">
-                {{ user.email }}
-              </option>
-            </datalist>
             <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
           </div>
 
+          <!-- Input field for password -->
           <div class="mb-3">
             <input
               type="password"
@@ -38,10 +33,12 @@
             <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
           </div>
 
+          <!-- Submit button -->
           <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary">Login</button>
           </div>
 
+          <!-- Register button -->
           <div class="text-center mt-4">
             <button type="button" class="btn btn-success" @click="goToRegister">Register</button>
           </div>
@@ -58,10 +55,11 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 const router = useRouter();
+const auth = getAuth();
 
-const users = ref([]);
 const loginData = ref({
   username: '',
   password: ''
@@ -74,41 +72,19 @@ const errors = ref({
 
 const loginError = ref(null);
 
-// Load users from localStorage
-const loadUsers = () => {
-  users.value = JSON.parse(localStorage.getItem('registeredUsers')) || [];
-};
-
-// Auto-fill password based on the selected email
-const fillPassword = () => {
-  const selectedUser = users.value.find(user => user.email === loginData.value.username);
-  if (selectedUser) {
-    loginData.value.password = selectedUser.password;
-  } else {
-    loginData.value.password = ''; // Clear the password field if the email doesn't match any user
-  }
-};
-
-// Sanitize input to prevent XSS
-const sanitizeInput = (input) => {
-  const element = document.createElement('div');
-  element.innerText = input;
-  return element.innerHTML;
-};
-
+// Email validation
 const validateEmail = (email) => {
   const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   return re.test(String(email).toLowerCase());
 };
 
+// Validate login form
 const validateLoginForm = () => {
   errors.value.username = null;
   errors.value.password = null;
   loginError.value = null;
 
   let isValid = true;
-
-  loginData.value.username = sanitizeInput(loginData.value.username);
 
   if (!validateEmail(loginData.value.username)) {
     errors.value.username = 'Enter a valid email address';
@@ -123,31 +99,35 @@ const validateLoginForm = () => {
   return isValid;
 };
 
+// Submit login form with Firebase authentication---------------------------------------------------------
 const submitLoginForm = () => {
   if (validateLoginForm()) {
-    localStorage.setItem('authenticatedUser', loginData.value.username); // Store the logged-in user
-    loginError.value = null; // Reset any previous login error
-    
-    // Redirect to service page after successful login
-    router.push('/service');
+    signInWithEmailAndPassword(auth, loginData.value.username, loginData.value.password)
+      .then(() => {
+        loginError.value = null; // Clear previous login errors
+        router.push('/service'); // Redirect after successful login
+      })
+      .catch((error) => {
+        loginError.value = error.message;
+      });
   } else {
     loginError.value = 'Invalid login credentials';
   }
 };
 
+// Redirect to Register page
 const goToRegister = () => {
   router.push('/register');
 };
 
+// Redirect to Homepage
 const goToHomepage = () => {
   router.push('/');
 };
-
-// Load users on component mount
-loadUsers();
 </script>
 
 <style scoped>
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 body {
@@ -176,20 +156,20 @@ body {
 }
 
 .btn-back {
-  position: fixed; /* Fixed positioning to keep it in the top-left corner */
+  position: fixed;
   top: 20px;
   left: 20px;
   background-color: transparent;
   border: none;
   font-size: 1rem;
-  color: #FF6F61; /* Coral-like color */
+  color: #FF6F61;
   cursor: pointer;
   text-decoration: underline;
-  z-index: 1000; /* Ensure it stays above other elements */
+  z-index: 1000;
 }
 
 .btn-back:hover {
-  color: #FF4B47; /* Darker coral on hover */
+  color: #FF4B47;
 }
 
 .text-primary {

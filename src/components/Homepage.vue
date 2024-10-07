@@ -9,7 +9,6 @@
         <router-link to="/">Home</router-link>
         <router-link to="/service">Services</router-link>
         <router-link to="/comment">Comment</router-link>
-
         
         <router-link v-if="!isAuthenticated" to="/login" class="navbar-item">Login</router-link>
         <router-link v-if="!isAuthenticated" to="/register" class="button is-primary">Get Started</router-link>
@@ -73,6 +72,14 @@
         </div>
       </div>
     </section>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+      <div class="container has-text-centered">
+        <p>Donghao Qin</p>
+        <p>Student ID: 34084983</p>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -243,5 +250,12 @@ checkAuthentication();
 .learn-more-button:hover {
   background-color: #c57878;
 }
-</style>
 
+/* Footer Section */
+.footer {
+  background-color: #f0f2f5;
+  padding: 20px;
+  text-align: center;
+  margin-top: 40px;
+}
+</style>

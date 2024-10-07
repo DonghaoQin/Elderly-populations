@@ -94,8 +94,10 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 const router = useRouter();
+const auth = getAuth();
 
 const formData = ref({
   username: '',
@@ -106,7 +108,6 @@ const formData = ref({
   gender: ''
 });
 
-const submittedCards = ref([]);
 const registrationSuccess = ref(false);
 
 const goToLogin = () => {
@@ -128,11 +129,10 @@ const errors = ref({
   username: null,
   email: null,
   password: null,
-  confirmPassword: null,
-  resident: null,
-  gender: null
+  confirmPassword: null
 });
 
+// Validate the form inputs
 const validateForm = () => {
   let isValid = true;
 
@@ -170,28 +170,23 @@ const validateEmail = (email) => {
   return re.test(String(email).toLowerCase());
 };
 
+// Submit the registration form using Firebase----------------------------------------------------------------
 const submitForm = () => {
   if (validateForm()) {
-    // Retrieve existing users from localStorage
-    let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+    createUserWithEmailAndPassword(auth, formData.value.email, formData.value.password)
+      .then(() => {
+        registrationSuccess.value = true;
 
-    // Add new user to the list
-    const newUser = {
-      email: formData.value.email,
-      password: formData.value.password
-    };
+        // Redirect to login after registration
+        setTimeout(() => {
+          router.push('/login');
+        }, 1000);
 
-    users.push(newUser);
-    localStorage.setItem('registeredUsers', JSON.stringify(users));
-
-    registrationSuccess.value = true;
-
-    // Redirect to login page after successful registration
-    setTimeout(() => {
-      router.push('/login');
-    }, 1000);
-
-    clearForm();
+        clearForm();
+      })
+      .catch((error) => {
+        errors.value.email = error.message; // Display any Firebase errors
+      });
   }
 };
 </script>
@@ -225,7 +220,7 @@ body {
 }
 
 .btn-back {
-  position: fixed; /* Fixed positioning to keep it in the top-left corner */
+  position: fixed; 
   top: 20px;
   left: 20px;
   background-color: transparent;
@@ -234,7 +229,7 @@ body {
   color: #f0e662;
   cursor: pointer;
   text-decoration: underline;
-  z-index: 1000; /* Ensure it stays above other elements */
+  z-index: 1000;
 }
 
 .alert-success {

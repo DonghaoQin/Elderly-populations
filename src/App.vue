@@ -3,7 +3,11 @@
     <header>
       <nav>
         <ul>
-          
+          <li><router-link to="/">Home</router-link></li>
+          <li><router-link to="/register">Register</router-link></li>
+          <li><router-link to="/login">Login</router-link></li>
+          <li><router-link to="/service">Service</router-link></li>
+          <li><router-link to="/comment">Comment</router-link></li>
         </ul>
       </nav>
     </header>
@@ -12,7 +16,6 @@
 </template>
 
 <script setup>
-
 </script>
 
 <style scoped>
@@ -33,5 +36,11 @@ nav ul li a {
 
 nav ul li a:hover {
   text-decoration: underline;
+}
+
+header {
+  background-color: #f0f2f5;
+  padding: 10px;
+  margin-bottom: 20px;
 }
 </style>
