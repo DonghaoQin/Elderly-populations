@@ -7,6 +7,7 @@
           <input v-model="emailData.to" type="email" id="to" required />
         </div>
   
+        
         <div class="form-group">
           <label for="subject">Subject:</label>
           <input v-model="emailData.subject" type="text" id="subject" required />
