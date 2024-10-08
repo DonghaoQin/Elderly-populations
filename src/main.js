@@ -10,9 +10,9 @@ import Aura from '@primevue/themes/aura';
 import { createRouter, createWebHistory } from 'vue-router';
 import Register from './components/register.vue';
 import Login from './components/login.vue';
-import Homepage from './components/homepage.vue';  // Import the Homepage component
-import Service from './components/service.vue';    // Import the Service component
-import Comment from './components/comment.vue';    // Import the Comment component
+import Homepage from './components/Homepage.vue';  // Import the Homepage component
+import Service from './components/Service.vue';    // Import the Service component
+import Comment from './components/Comment.vue';    // Import the Comment component
 import EmailForm from './components/EmailForm.vue';  // Import EmailForm.vue
 // Firebase configuration from your details
 const firebaseConfig = {
