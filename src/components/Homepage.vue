@@ -58,7 +58,8 @@
             <p>Therapy</p>
           </div>
           <div class="service-item">
-            <img src="@/assets/psychiatry-icon.png" alt="Psychiatry Icon">
+            <img src="@/assets/Psychiatry-icon.png" alt="Psychiatry Icon" />
+
             <p>Psychiatry</p>
           </div>
           <div class="service-item">
