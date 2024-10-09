@@ -7,6 +7,13 @@
       <button v-if="destination" @click="navigateToDestination">Navigate</button> <!-- Navigate button -->
     </div>
 
+    <!-- 3D Buildings toggle -->
+    <div>
+      <label>
+        <input type="checkbox" v-model="show3DBuildings" @change="toggle3DBuildings" /> Show 3D Buildings
+      </label>
+    </div>
+
     <!-- Map container -->
     <div id="map" style="width: 100%; height: 500px;"></div>
   </div>
@@ -25,10 +32,11 @@ export default {
       marker: null,  // Marker for the searched location
       userLocation: [145.1346, -37.9105],  // Fixed location: 33 Innovation Walk, Clayton VIC 3168
       destination: null,  // Coordinates of the searched location (for navigation)
+      show3DBuildings: false,  // Toggle for 3D buildings
     };
   },
   mounted() {
-    // Initialize the map with a fixed location (33 Innovation Walk)
+    // Initialize the map with the fixed location
     mapboxgl.accessToken = 'pk.eyJ1IjoiZG9uZ2hhb3FpbiIsImEiOiJjbTIxb3I2MmcwOWs5Mm1weHdzODJleWF3In0.J-NoM8jZreEeTpXxiobzYQ';
     this.initializeMap(this.userLocation);  // Use fixed location
   },
@@ -86,8 +94,8 @@ export default {
     },
     // Navigate from the fixed location to the searched destination
     navigateToDestination() {
-      if (!this.destination) {
-        alert('No destination set. Please search for a location first.');
+      if (!this.destination || !this.userLocation) {
+        alert('Please search for a destination first.');
         return;
       }
 
@@ -138,6 +146,40 @@ export default {
         .catch((error) => {
           console.error('Error fetching directions:', error);
         });
+    },
+    // Toggle 3D buildings
+    toggle3DBuildings() {
+      if (this.show3DBuildings) {
+        // Add 3D buildings layer
+        this.map.addLayer({
+          'id': '3d-buildings',
+          'source': 'composite',
+          'source-layer': 'building',
+          'filter': ['==', 'extrude', 'true'],
+          'type': 'fill-extrusion',
+          'minzoom': 15,
+          'paint': {
+            'fill-extrusion-color': '#aaa',
+            'fill-extrusion-height': [
+              'interpolate', ['linear'], ['zoom'],
+              15, 0,
+              15.05, ['get', 'height']
+            ],
+            'fill-extrusion-base': [
+              'interpolate', ['linear'], ['zoom'],
+              15, 0,
+              15.05, ['get', 'min_height']
+            ],
+            'fill-extrusion-opacity': 0.6
+          }
+        });
+      } else {
+        // Remove 3D buildings layer
+        if (this.map.getLayer('3d-buildings')) {
+          this.map.removeLayer('3d-buildings');
+          this.map.removeSource('3d-buildings');
+        }
+      }
     }
   }
 };
@@ -155,5 +197,10 @@ input {
 button {
   padding: 10px;
   font-size: 16px;
+}
+
+label {
+  margin-top: 10px;
+  display: block;
 }
 </style>
