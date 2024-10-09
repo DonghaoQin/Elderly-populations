@@ -4,6 +4,7 @@ import Login from '../components/Login.vue';                            // Adjus
 import Service from '../components/Service.vue';                        // Adjusted the path
 import Comment from '../components/Comment.vue';                        // Adjusted the path
 import EmailForm from '../components/EmailForm.vue';                    // Adjusted the path
+import MapView from '../components/Map.vue';                            // Corrected the component name
 
 const routes = [
   {
@@ -40,6 +41,11 @@ const routes = [
     path: '/email',
     name: 'Email',
     component: EmailForm                                                 // Email form view
+  },
+  {
+    path: '/map',
+    name: 'Map',
+    component: MapView                                                   // Map view
   }
 ];
 

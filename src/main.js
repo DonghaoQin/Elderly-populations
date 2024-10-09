@@ -5,6 +5,8 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
 
 // Import routing and components
 import { createRouter, createWebHistory } from 'vue-router';
@@ -14,6 +16,8 @@ import Homepage from './components/Homepage.vue';  // Import the Homepage compon
 import Service from './components/Service.vue';    // Import the Service component
 import Comment from './components/Comment.vue';    // Import the Comment component
 import EmailForm from './components/EmailForm.vue';  // Import EmailForm.vue
+import MapView from './components/Map.vue';         // Import MapView component
+
 // Firebase configuration from your details
 const firebaseConfig = {
   apiKey: "AIzaSyDIRI3ZPjEgDefQWPbfV7zbGM_ZV36yBGI",
@@ -37,7 +41,8 @@ const routes = [
   { path: '/service', component: Service, meta: { requiresAuth: true } },
   { path: '/comment', component: Comment, meta: { requiresAuth: true } }, 
   { path: '/email', component: EmailForm },  // Add EmailForm route
-  { path: '/logout', component: Homepage }  // Logout redirects to Homepage
+  { path: '/map', component: MapView },      // Add MapView route
+  { path: '/logout', component: Homepage }   // Logout redirects to Homepage
 ];
 
 const router = createRouter({

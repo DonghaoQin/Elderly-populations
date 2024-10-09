@@ -12,6 +12,7 @@
         <router-link to="/email">Send Email</router-link> <!-- Added Send Email Link -->
         
         <router-link v-if="!isAuthenticated" to="/login" class="navbar-item">Login</router-link>
+        <router-link v-if="!isAuthenticated" to="/map" class="navbar-item">Map</router-link> <!-- 添加 Map 按钮 -->
         <router-link v-if="!isAuthenticated" to="/register" class="button is-primary">Get Started</router-link>
         <button v-if="isAuthenticated" @click="logout" class="navbar-item">Logout</button>
       </nav>
