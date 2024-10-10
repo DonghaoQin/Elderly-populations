@@ -60,7 +60,6 @@
           </div>
           <div class="service-item">
             <img src="@/assets/Psychiatry-icon.png" alt="Psychiatry Icon" />
-
             <p>Psychiatry</p>
           </div>
           <div class="service-item">
@@ -87,24 +86,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const isAuthenticated = ref(false);
 
-const checkAuthentication = () => {
+onMounted(() => {
   const user = localStorage.getItem('authenticatedUser');
   isAuthenticated.value = !!user; // Converts the result to a boolean
-};
+});
 
 const logout = () => {
   localStorage.removeItem('authenticatedUser');
   isAuthenticated.value = false;
   router.push('/');  // Redirect to homepage after logout
 };
-
-checkAuthentication();
 </script>
 
 <style scoped>
@@ -127,7 +124,7 @@ checkAuthentication();
 
 .button.is-primary {
   background-color: #f7eae8;
-  color: #ffffff;
+  color: #333; /* 改为深色文字 */
   border-radius: 5px;
   padding: 10px 20px;
 }

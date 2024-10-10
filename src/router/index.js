@@ -6,6 +6,7 @@ import Service from '../components/Service.vue';                        // Adjus
 import Comment from '../components/Comment.vue';                        // Adjusted the path
 import EmailForm from '../components/EmailForm.vue';                    // Adjusted the path
 import MapView from '../components/Map.vue';                            // Corrected the component name
+import { createRouter, createWebHistory } from 'vue-router'; // 添加导入语句
 
 const routes = [
   {
@@ -67,4 +68,5 @@ router.beforeEach((to, from, next) => {
     next(); // 允许导航到目标页面
   }
 });
+
 export default router;

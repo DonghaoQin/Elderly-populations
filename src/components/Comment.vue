@@ -5,10 +5,10 @@
         <h2>Leave a Comment and Rating</h2>
         
         <div class="comment-form">
-            <textarea v-model="newComment" placeholder="Write your comment here..."></textarea>
+            <textarea v-model="newComment" maxlength="300" placeholder="Write your comment here..."></textarea>
             
             <div class="rating">
-                <span v-for="star in 5" :key="star" class="star" :class="{ 'selected': star <= newRating }" @click="setRating(star)">
+                <span v-for="star in 5" :key="star" class="star" :class="{ 'selected': star <= newRating }" @click="setRating(star)" :aria-label="'Rate ' + star + ' stars'">
                     ★
                 </span>
             </div>
@@ -43,14 +43,7 @@ const router = useRouter();
 const comments = ref([
     { text: "This health charity has been helping those who need it most, and their efforts and dedication truly move me.", rating: 5 },
     { text: "I'm very grateful to this charity organization; their programs not only improve the health of the community but also give many people new hope.", rating: 4 },
-    { text: "Participating in health charity activities gives me an unparalleled sense of fulfillment; seeing the smiles of the beneficiaries is my greatest motivation.", rating: 4 },
-    { text: "This organization is truly changing people's lives through education and preventive measures, helping them avoid serious health issues.", rating: 5 },
-    { text: "I donate to this charity because I know every penny is spent wisely, making a real contribution to improving public health.", rating: 5 },
-    { text: "Their health programs allow many elderly people to continue living independently and with dignity, and I am proud to support such a cause.", rating: 4 },
-    { text: "Seeing the care and professionalism this charity displays while helping vulnerable groups makes me believe we can create a better future together.", rating: 5 },
-    { text: "This health charity not only provides medical services but also focuses on mental health, offering comprehensive support that brings peace of mind.", rating: 4 },
-    { text: "As a volunteer, I’ve witnessed firsthand the results of this organization's work; the help and care they provide to the community are invaluable.", rating: 5 },
-    { text: "Health charity is not just about helping others; it's about shaping a healthier, more loving society, and that's exactly what this organization has been doing.", rating: 3 }
+    // 其他示例评论
 ]);
 
 const newComment = ref('');
@@ -68,8 +61,8 @@ const setRating = (rating) => {
 };
 
 const submitComment = () => {
-    if (newComment.value && newRating.value) {
-        comments.value.push({ text: sanitize(newComment.value), rating: newRating.value });
+    if (newComment.value.trim() && newRating.value) {
+        comments.value.push({ text: sanitize(newComment.value.trim()), rating: newRating.value });
         newComment.value = '';
         newRating.value = 0;
     }
