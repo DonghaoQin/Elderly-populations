@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { createApp } from 'vue';
 import App from './App.vue';
 import PrimeVue from 'primevue/config';
@@ -9,24 +9,24 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Import routing and components
 import { createRouter, createWebHistory } from 'vue-router';
-import Register from './components/register.vue';
-import Login from './components/login.vue';
-import Homepage from './components/Homepage.vue';  // Import the Homepage component
-import Service from './components/Service.vue';    // Import the Service component
-import Comment from './components/Comment.vue';    // Import the Comment component
-import EmailForm from './components/EmailForm.vue';  // Import EmailForm.vue
-import MapView from './components/Map.vue';         // Import MapView component
-import TableComponent from './components/TableComponent.vue'; // Import TableComponent.vue
+import Register from './components/Register.vue';
+import Login from './components/Login.vue';
+import Homepage from './components/Homepage.vue';  
+import Service from './components/Service.vue';    
+import Comment from './components/Comment.vue';    
+import EmailForm from './components/EmailForm.vue';  
+import MapView from './components/Map.vue';         
+import TableComponent from './components/TableComponent.vue'; 
 
-// Firebase configuration from your details
+// Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDIRI3ZPjEgDefQWPbfV7zbGM_ZV36yBGI",
-  authDomain: "ass3-f44ec.firebaseapp.com",
-  projectId: "ass3-f44ec",
-  storageBucket: "ass3-f44ec.appspot.com",
-  messagingSenderId: "64117293763",
-  appId: "1:64117293763:web:e2d7a6ec6e5a550d5b9876",
-  measurementId: "G-C46QQYD88G"
+  apiKey: "your-api-key",
+  authDomain: "your-auth-domain",
+  projectId: "your-project-id",
+  storageBucket: "your-storage-bucket",
+  messagingSenderId: "your-messaging-sender-id",
+  appId: "your-app-id",
+  measurementId: "your-measurement-id"
 };
 
 // Initialize Firebase
@@ -40,10 +40,10 @@ const routes = [
   { path: '/login', component: Login },
   { path: '/service', component: Service, meta: { requiresAuth: true } },
   { path: '/comment', component: Comment, meta: { requiresAuth: true } }, 
-  { path: '/email', component: EmailForm },  // Add EmailForm route
-  { path: '/map', component: MapView },      // Add MapView route
-  { path: '/table', component: TableComponent }, // Add TableComponent route
-  { path: '/logout', component: Homepage }   // Logout redirects to Homepage
+  { path: '/email', component: EmailForm },  
+  { path: '/map', component: MapView },      
+  { path: '/table', component: TableComponent }, 
+  { path: '/logout', component: Homepage }   
 ];
 
 const router = createRouter({
@@ -57,12 +57,26 @@ app.use(PrimeVue, { theme: { preset: Aura } });
 app.use(router);
 app.mount('#app');
 
+// Firebase Authentication state listener
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in, allow access to protected routes
+  } else {
+    // No user is signed in
+    if (router.currentRoute.value.meta.requiresAuth) {
+      router.push('/login');
+    }
+  }
+});
+
 // Navigation guard to protect routes
 router.beforeEach((to, from, next) => {
   const user = auth.currentUser;
+  
+  // Wait for Firebase auth initialization before protecting routes
   if (to.matched.some(record => record.meta.requiresAuth) && !user) {
-    next('/login');
+    next('/login'); // Redirect to login if user is not authenticated
   } else {
-    next();
+    next(); // Allow navigation
   }
 });

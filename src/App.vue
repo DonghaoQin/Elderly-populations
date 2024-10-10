@@ -36,12 +36,7 @@ const user = ref(null);
 // Firebase authentication
 onMounted(() => {
   onAuthStateChanged(auth, (currentUser) => {
-    if (currentUser) {
-      user.value = currentUser;
-    } else {
-      user.value = null;
-      router.push('/login'); 
-    }
+    user.value = currentUser;
   });
 });
 
@@ -54,7 +49,7 @@ const logout = async () => {
 
 // Export as CSV
 const exportAsCSV = () => {
-  const content = document.body.innerText; // Get page text content
+  const content = document.querySelector('main').innerText; // Export specific content
   const csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent(content);
   const link = document.createElement("a");
   link.setAttribute("href", csvContent);
@@ -67,14 +62,14 @@ const exportAsCSV = () => {
 // Export as PDF
 const exportAsPDF = () => {
   const doc = new jsPDF();
-  const content = document.body.innerText; // Get page text content
+  const content = document.querySelector('main').innerText; // Export specific content
   doc.text(content, 10, 10);
   doc.save('export.pdf');
 };
 
 // Export as PNG
 const exportAsPNG = () => {
-  html2canvas(document.body).then((canvas) => {
+  html2canvas(document.querySelector('main')).then((canvas) => {
     const link = document.createElement('a');
     link.href = canvas.toDataURL();
     link.download = 'export.png';
@@ -120,5 +115,12 @@ button {
 button:hover {
   background-color: #e0e0e0;
 }
-</style>
 
+/* 响应式样式 */
+@media (max-width: 600px) {
+  nav ul li {
+    display: block;
+    margin-bottom: 10px;
+  }
+}
+</style>
