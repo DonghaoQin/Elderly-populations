@@ -1,22 +1,25 @@
 <template>
   <div>
     <!-- Navigation Bar -->
-    <header class="navbar">
-      <div class="navbar-brand">
-        <h1>Elderly Populations</h1>
-      </div>
-      <nav class="navbar-menu">
-        <router-link to="/">Home</router-link>
-        <router-link to="/service">Services</router-link>
-        <router-link to="/comment">Comment</router-link>
-        <router-link to="/email">Send Email</router-link> <!-- Added Send Email Link -->
-        
-        <router-link v-if="!isAuthenticated" to="/login" class="navbar-item">Login</router-link>
-        <router-link v-if="!isAuthenticated" to="/map" class="navbar-item">Map</router-link> <!-- 添加 Map 按钮 -->
-        <router-link v-if="!isAuthenticated" to="/register" class="button is-primary">Get Started</router-link>
-        <button v-if="isAuthenticated" @click="logout" class="navbar-item">Logout</button>
-      </nav>
-    </header>
+    <!-- Navigation Bar -->
+<header class="navbar">
+  <div class="navbar-brand">
+    <h1>Elderly Populations</h1>
+  </div>
+  <nav class="navbar-menu">
+    <router-link to="/">Home</router-link>
+    <router-link to="/service">Services</router-link>
+    <router-link to="/comment">Comment</router-link>
+    <router-link to="/email">Send Email</router-link> <!-- Added Send Email Link -->
+    
+    <router-link v-if="!isAuthenticated" to="/login" class="navbar-item">Login</router-link>
+    <router-link v-if="!isAuthenticated" to="/map" class="navbar-item">Map</router-link> <!-- Map Button -->
+    <router-link v-if="!isAuthenticated" to="/table" class="navbar-item">Table</router-link> <!-- New Table Button -->
+    <router-link v-if="!isAuthenticated" to="/register" class="button is-primary">Get Started</router-link>
+    <button v-if="isAuthenticated" @click="logout" class="navbar-item">Logout</button>
+  </nav>
+</header>
+
 
     <!-- Hero Section -->
     <section class="hero is-fullheight is-primary is-bold" style="background-color: #add8e6;">

@@ -6,7 +6,8 @@ import Service from '../components/Service.vue';                        // Adjus
 import Comment from '../components/Comment.vue';                        // Adjusted the path
 import EmailForm from '../components/EmailForm.vue';                    // Adjusted the path
 import MapView from '../components/Map.vue';                            // Corrected the component name
-import { createRouter, createWebHistory } from 'vue-router'; // 添加导入语句
+import TableComponent from '../components/TableComponent.vue';          // Added TableComponent
+import { createRouter, createWebHistory } from 'vue-router';            // 添加导入语句
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: '/map',
     name: 'Map',
     component: MapView                                                   // Map view
+  },
+  {
+    path: '/table',
+    name: 'Table',
+    component: TableComponent                                            // Table component view
   }
 ];
 

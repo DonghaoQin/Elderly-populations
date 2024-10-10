@@ -7,7 +7,6 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-
 // Import routing and components
 import { createRouter, createWebHistory } from 'vue-router';
 import Register from './components/register.vue';
@@ -17,6 +16,7 @@ import Service from './components/Service.vue';    // Import the Service compone
 import Comment from './components/Comment.vue';    // Import the Comment component
 import EmailForm from './components/EmailForm.vue';  // Import EmailForm.vue
 import MapView from './components/Map.vue';         // Import MapView component
+import TableComponent from './components/TableComponent.vue'; // Import TableComponent.vue
 
 // Firebase configuration from your details
 const firebaseConfig = {
@@ -42,6 +42,7 @@ const routes = [
   { path: '/comment', component: Comment, meta: { requiresAuth: true } }, 
   { path: '/email', component: EmailForm },  // Add EmailForm route
   { path: '/map', component: MapView },      // Add MapView route
+  { path: '/table', component: TableComponent }, // Add TableComponent route
   { path: '/logout', component: Homepage }   // Logout redirects to Homepage
 ];
 
@@ -65,5 +66,3 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
-

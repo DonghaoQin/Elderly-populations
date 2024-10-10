@@ -23,23 +23,23 @@ const auth = getAuth();
 const router = useRouter();
 const user = ref(null);
 
-// 监听Firebase用户状态
+// Firebase
 onMounted(() => {
   onAuthStateChanged(auth, (currentUser) => {
     if (currentUser) {
       user.value = currentUser;
     } else {
       user.value = null;
-      router.push('/login'); // 如果用户未登录，跳转到登录页面
+      router.push('/login'); 
     }
   });
 });
 
-// 登出功能
+// logout
 const logout = async () => {
   await signOut(auth);
   user.value = null;
-  router.push('/login'); // 登出后跳转到登录页面
+  router.push('/login'); 
 };
 </script>
 
