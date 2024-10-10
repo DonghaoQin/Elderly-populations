@@ -1,4 +1,5 @@
 import FirebaseSigninView from '../components/FirebaseSigninView.vue'; // Adjusted the path
+import { getAuth } from 'firebase/auth';
 import Register from '../components/Register.vue';                      // Adjusted the path
 import Login from '../components/Login.vue';                            // Adjusted the path
 import Service from '../components/Service.vue';                        // Adjusted the path
@@ -54,4 +55,16 @@ const router = createRouter({
   routes,
 });
 
+// 全局路由守卫
+router.beforeEach((to, from, next) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  // 检查路由是否需要登录
+  if (to.meta.requiresAuth && !user) {
+    next({ name: 'Login' }); // 如果用户未登录，重定向到登录页面
+  } else {
+    next(); // 允许导航到目标页面
+  }
+});
 export default router;

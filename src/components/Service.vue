@@ -77,15 +77,23 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const router = useRouter();
 const isAuthenticated = ref(false);
 
+// 使用 Firebase 身份验证来检查用户状态
 const checkAuthentication = () => {
-  const user = localStorage.getItem('authenticatedUser');
-  isAuthenticated.value = !!user; // Converts the result to a boolean
+  const auth = getAuth();
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      isAuthenticated.value = true;  // 用户已登录
+    } else {
+      isAuthenticated.value = false; // 用户未登录
+    }
+  });
 };
 
 const goToLogin = () => {
@@ -96,8 +104,12 @@ const goBack = () => {
   router.push('/');
 };
 
-checkAuthentication();
+// 在组件挂载时检查身份验证状态
+onMounted(() => {
+  checkAuthentication();
+});
 </script>
+
 
 <style scoped>
 .service-page-container {
