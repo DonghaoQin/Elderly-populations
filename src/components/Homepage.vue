@@ -66,7 +66,8 @@
         <textarea v-model="userInput" placeholder="Enter your prompt here"></textarea>
 
         <!-- 点击生成按钮 -->
-        <button @click="generateTextFromAI" :disabled="loadingOpenAI">Generate Text</button>
+        <button @click="generateTextFromGemini" :disabled="loadingOpenAI">Generate Text</button>
+
 
         <!-- 显示生成的文本 -->
         <div v-if="loadingOpenAI">Loading...</div>
@@ -125,31 +126,48 @@ onMounted(() => {
     });
 });
 
-const generateTextFromAI = async () => {
-  if (!userInput.value) return;
+const generateTextFromGemini = async () => {
+  console.log('Generate Text button clicked!');  // 检查按钮是否触发函数
+  if (!userInput.value) {
+    console.warn('No input provided for the AI generation.');
+    return;
+  }
 
   loadingOpenAI.value = true;
-  generatedText.value = '';  // 清空之前生成的文本
+  generatedText.value = '';  // 清除之前生成的文本
   
   try {
-    const response = await axios.post('https://api.openai.com/v1/completions', {
-      model: 'text-davinci-003',
-      prompt: userInput.value,
-      max_tokens: 100
-    }, {
-      headers: {
-        'Authorization': `Bearer ----------------------------------`  // 替换为你的 OpenAI API 密钥
+    const response = await axios.post(
+      'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key=AIzaSyDdI-IslEdXFg6QI1eBZNtYLycBSVA6LpA',  // 请确保API路径是正确的
+      {
+        prompt: {
+          text: userInput.value,  // 提供用户输入的提示
+        }
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        }
       }
-    });
+    );
 
-    // 获取返回的生成文本
-    generatedText.value = response.data.choices[0].text;
+    console.log('Gemini API Response:', response.data);  // 输出 API 返回的数据
+    generatedText.value = response.data.candidates ? response.data.candidates[0].output : 'No output generated.';  // 正确处理输出
   } catch (error) {
-    console.error('Error fetching AI generated text:', error);
+    console.error('Error fetching Gemini generated text:', error.response ? error.response.data : error.message);
+    generatedText.value = 'Error fetching Gemini generated text. Please try again later.';
   } finally {
     loadingOpenAI.value = false;
   }
 };
+
+
+
+
+
+
+
+
 
 const logout = () => {
   localStorage.removeItem('authenticatedUser');
