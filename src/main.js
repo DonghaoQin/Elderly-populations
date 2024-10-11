@@ -21,7 +21,7 @@ import Admin from './components/Admin.vue';  // Import Admin component
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "your-api-key",
+  apiKey: "AIzaSyDIRI3ZPjEgDefQWPbfV7zbGM_ZV36yBGI",
   authDomain: "your-auth-domain",
   projectId: "your-project-id",
   storageBucket: "your-storage-bucket",
