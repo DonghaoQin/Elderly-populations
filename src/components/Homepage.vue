@@ -138,7 +138,7 @@ const generateTextFromGemini = async () => {
   
   try {
     const response = await axios.post(
-      'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key=AIzaSyDdI-IslEdXFg6QI1eBZNtYLycBSVA6LpA',  // 请确保API路径是正确的
+      'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key=',  // 请确保API路径是正确的
       {
         prompt: {
           text: userInput.value,  // 提供用户输入的提示
