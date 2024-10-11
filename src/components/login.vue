@@ -39,7 +39,11 @@ const auth = getAuth();
 const loginWithEmailPassword = () => {
   signInWithEmailAndPassword(auth, email.value, password.value)
     .then(() => {
-      router.push('/service');  // 登录成功后跳转到服务页面
+      if (email.value === 'admin@gmail.com' && password.value === '11QQqq..') {
+        router.push('/admin');  // 管理员登录后跳转到管理员页面
+      } else {
+        router.push('/service');  // 普通用户登录后跳转到服务页面
+      }
     })
     .catch((error) => {
       errorMessage.value = error.message;
@@ -126,3 +130,4 @@ const goToRegister = () => {
   color: red;
 }
 </style>
+

@@ -17,6 +17,7 @@ import Comment from './components/Comment.vue';
 import EmailForm from './components/EmailForm.vue';  
 import MapView from './components/Map.vue';         
 import TableComponent from './components/TableComponent.vue'; 
+import Admin from './components/Admin.vue';  // Import Admin component
 
 // Firebase configuration
 const firebaseConfig = {
@@ -43,7 +44,8 @@ const routes = [
   { path: '/email', component: EmailForm },  
   { path: '/map', component: MapView },      
   { path: '/table', component: TableComponent }, 
-  { path: '/logout', component: Homepage }   
+  { path: '/logout', component: Homepage },
+  { path: '/admin', component: Admin, meta: { requiresAdmin: true } }  // Add Admin route
 ];
 
 const router = createRouter({
@@ -60,7 +62,10 @@ app.mount('#app');
 // Firebase Authentication state listener
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User is signed in, allow access to protected routes
+    // User is signed in, check for admin role
+    if (user.email === 'admin@gmail.com') {
+      router.push('/admin');  // Redirect to admin page for admin user
+    }
   } else {
     // No user is signed in
     if (router.currentRoute.value.meta.requiresAuth) {
@@ -72,11 +77,19 @@ onAuthStateChanged(auth, (user) => {
 // Navigation guard to protect routes
 router.beforeEach((to, from, next) => {
   const user = auth.currentUser;
-  
-  // Wait for Firebase auth initialization before protecting routes
+
+  // Check if the route requires authentication
   if (to.matched.some(record => record.meta.requiresAuth) && !user) {
     next('/login'); // Redirect to login if user is not authenticated
+  } 
+  // Check if the route requires admin privileges
+  else if (to.matched.some(record => record.meta.requiresAdmin)) {
+    if (user && user.email === 'admin@gmail.com') {
+      next(); // Allow navigation for admin
+    } else {
+      next('/login'); // Redirect to login if not an admin
+    }
   } else {
-    next(); // Allow navigation
+    next(); // Allow navigation for non-admin routes
   }
 });
