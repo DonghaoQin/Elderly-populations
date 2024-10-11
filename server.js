@@ -25,9 +25,9 @@ app.post('/send-email', upload.single('attachment'), async (req, res) => {
   const { to, subject, text } = req.body;
   const attachmentPath = req.file ? req.file.path : null;
 
-  const msg = {
-    to,
-    from: 'dillion0504@gmail.com',  
+  const messages = to.map((recipient) => ({
+    to: recipient,
+    from: 'dillion0504@gmail.com',
     subject,
     text,
     attachments: attachmentPath
@@ -40,21 +40,22 @@ app.post('/send-email', upload.single('attachment'), async (req, res) => {
           },
         ]
       : [],
-  };
+  }));
 
   try {
-    console.log('Sending email to:', to);
-    await sgMail.send(msg);
-    console.log('Email sent successfully');
+    console.log('Sending bulk emails to:', to);
+    await sgMail.send(messages); // 使用批量发送的功能
+    console.log('Emails sent successfully');
     if (attachmentPath) {
-      fs.unlinkSync(attachmentPath);  
+      fs.unlinkSync(attachmentPath); // 删除附件
     }
-    res.status(200).json({ message: 'Email sent successfully!' });
+    res.status(200).json({ message: 'Emails sent successfully!' });
   } catch (error) {
-    console.error('Error sending email:', error.response ? error.response.body : error);
-    res.status(500).json({ error: 'Failed to send email.' });
+    console.error('Error sending emails:', error.response ? error.response.body : error);
+    res.status(500).json({ error: 'Failed to send emails.' });
   }
 });
+
 
 
 app.listen(port, () => {
