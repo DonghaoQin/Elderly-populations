@@ -35,46 +35,42 @@
       </div>
     </section>
 
-    <!-- Our Approach Section -->
-    <section class="our-approach">
+    <!-- API Data Section -->
+    <section class="api-data">
       <div class="container">
-        <h2 class="approach-title">Our approach</h2>
-        <p class="approach-description">
-          We are a group of doctoral-level psychologists and psychiatrists who
-          provide quality mental health care. As a mental health collective, we
-          assist members by providing therapy, medication management, coaching,
-          and more. Let us help you connect with one of our doctors who meets your
-          needs and is available to see you, online or in-person.
-        </p>
-        <div class="button-container">
-          <button class="learn-more-button">Learn more</button>
+        <h2 class="api-title">Posts from API</h2>
+        <p class="api-description">The following data is fetched dynamically from an external API and updates with random posts on each page load.</p>
+
+        <div v-if="loading" class="loading-indicator">
+          <p>Loading data from API...</p>
         </div>
+        <ul v-else-if="posts.length > 0">
+          <li v-for="post in posts" :key="post.id" class="post-item">
+            <strong>{{ post.title }}</strong>
+            <p>{{ post.body.slice(0, 100) }}...</p>
+          </li>
+        </ul>
+        <p v-else>No posts available from the API.</p>
+
+        <p v-if="lastUpdated" class="last-updated">Data last updated: {{ lastUpdated }}</p>
+        <p>Data fetched from <a href="https://jsonplaceholder.typicode.com/" target="_blank">JSONPlaceholder API</a>.</p>
       </div>
     </section>
 
-    <!-- Our Services Section -->
-    <section class="our-services">
+    <!-- OpenAI Text Generator Section -->
+    <section class="openai-section">
       <div class="container">
-        <h2 class="services-title">Our services</h2>
-        <div class="services-grid">
-          <div class="service-item">
-            <img src="@/assets/therapy-icon.png" alt="Therapy Icon">
-            <p>Therapy</p>
-          </div>
-          <div class="service-item">
-            <img src="@/assets/Psychiatry-icon.png" alt="Psychiatry Icon" />
-            <p>Psychiatry</p>
-          </div>
-          <div class="service-item">
-            <img src="@/assets/coaching-icon.png" alt="Coaching Icon">
-            <p>Coaching</p>
-          </div>
-        </div>
-        <div class="button-container">
-          <router-link to="/service">
-            <button class="learn-more-button">Learn More</button>
-          </router-link>
-        </div>
+        <h2 class="openai-title">Generate Text with OpenAI</h2>
+        
+        <!-- 用户输入的提示词 -->
+        <textarea v-model="userInput" placeholder="Enter your prompt here"></textarea>
+
+        <!-- 点击生成按钮 -->
+        <button @click="generateTextFromAI" :disabled="loadingOpenAI">Generate Text</button>
+
+        <!-- 显示生成的文本 -->
+        <div v-if="loadingOpenAI">Loading...</div>
+        <p v-if="generatedText">{{ generatedText }}</p>
       </div>
     </section>
 
@@ -90,15 +86,70 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const isAuthenticated = ref(false);
+const posts = ref([]);
+const loading = ref(true);
+const lastUpdated = ref('');
+const userInput = ref('');
+const generatedText = ref('');
+const loadingOpenAI = ref(false);
+
+// Helper function to generate a random number within a range
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 onMounted(() => {
   const user = localStorage.getItem('authenticatedUser');
-  isAuthenticated.value = !!user; // Converts the result to a boolean
+  isAuthenticated.value = !!user;
+
+  // Generate a random number to request different posts each time
+  const randomStart = getRandomInt(1, 50); // Generate a random start index
+  const randomEnd = randomStart + 5; // Limit the number of posts
+
+  // Fetch data from the API with a random range of posts
+  axios.get(`https://jsonplaceholder.typicode.com/posts?_start=${randomStart}&_limit=5`)
+    .then(response => {
+      console.log('API Response:', response.data);  // Debug API data
+      posts.value = response.data;
+      lastUpdated.value = new Date().toLocaleString(); // Record the last updated time
+      loading.value = false;  // Data fetched, stop loading
+    })
+    .catch(error => {
+      console.error('Error fetching posts:', error);
+      loading.value = false;  // Even if there is an error, stop loading
+    });
 });
+
+const generateTextFromAI = async () => {
+  if (!userInput.value) return;
+
+  loadingOpenAI.value = true;
+  generatedText.value = '';  // 清空之前生成的文本
+  
+  try {
+    const response = await axios.post('https://api.openai.com/v1/completions', {
+      model: 'text-davinci-003',
+      prompt: userInput.value,
+      max_tokens: 100
+    }, {
+      headers: {
+        'Authorization': `Bearer ----------------------------------`  // 替换为你的 OpenAI API 密钥
+      }
+    });
+
+    // 获取返回的生成文本
+    generatedText.value = response.data.choices[0].text;
+  } catch (error) {
+    console.error('Error fetching AI generated text:', error);
+  } finally {
+    loadingOpenAI.value = false;
+  }
+};
 
 const logout = () => {
   localStorage.removeItem('authenticatedUser');
@@ -108,6 +159,7 @@ const logout = () => {
 </script>
 
 <style scoped>
+/* Navigation Bar */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -127,11 +179,12 @@ const logout = () => {
 
 .button.is-primary {
   background-color: #f7eae8;
-  color: #333; /* 改为深色文字 */
+  color: #333; 
   border-radius: 5px;
   padding: 10px 20px;
 }
 
+/* Hero Section */
 .hero {
   height: 100vh;
   display: flex;
@@ -141,117 +194,99 @@ const logout = () => {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.hero-body {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.title {
-  font-size: 3rem;
-  margin-bottom: 20px;
-}
-
-.subtitle {
-  font-size: 1.5rem;
-}
-
-.our-approach {
-  padding: 100px 20px;
+/* API Data Section */
+.api-data {
+  padding: 50px 20px;
   background-color: #f9f9f9;
   text-align: center;
 }
 
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.approach-title {
-  font-size: 2.5rem;
+.api-title {
+  font-size: 2rem;
   margin-bottom: 20px;
   color: #333;
 }
 
-.approach-description {
-  font-size: 1.25rem;
-  line-height: 1.6;
-  color: #666;
-  margin-bottom: 40px;
-}
-
-.button-container {
-  text-align: center;
-}
-
-.learn-more-button {
-  background-color: #d08989;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.learn-more-button:hover {
-  background-color: #c57878;
-}
-
-/* Our Services Section */
-.our-services {
-  padding: 100px 20px;
-  background-color: #3e4d4a;
-  color: #fff;
-  text-align: center;
-}
-
-.services-title {
-  font-size: 2.5rem;
-  margin-bottom: 40px;
-  color: #f1f1f1;
-}
-
-.services-grid {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  margin-bottom: 40px;
-}
-
-.service-item {
-  width: 150px;
-  text-align: center;
+.api-description {
+  font-size: 1.1rem;
   margin-bottom: 20px;
 }
 
-.service-item img {
-  width: 100px;
-  height: 100px;
-  margin-bottom: 10px;
+.loading-indicator {
+  font-size: 1.5rem;
+  text-align: center;
+  color: #999;
 }
 
-.service-item p {
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.post-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+}
+
+.post-item strong {
   font-size: 1.2rem;
-  color: #f1f1f1;
+  color: #333;
 }
 
-.button-container {
+.post-item p {
+  font-size: 1rem;
+  color: #666;
+}
+
+.last-updated {
+  font-size: 0.9rem;
+  color: #666;
+  text-align: right;
+}
+
+/* OpenAI Text Generator Section */
+.openai-section {
+  padding: 50px 20px;
+  background-color: #f4f4f4;
   text-align: center;
 }
 
-.learn-more-button {
-  background-color: #d08989;
+.openai-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
   color: white;
-  padding: 12px 24px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 1rem;
 }
 
-.learn-more-button:hover {
-  background-color: #c57878;
+button:disabled {
+  background-color: #ccc;
+}
+
+button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+p {
+  margin-top: 20px;
+  font-size: 18px;
 }
 
 /* Footer Section */

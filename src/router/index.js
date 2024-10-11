@@ -1,79 +1,74 @@
-import FirebaseSigninView from '../components/FirebaseSigninView.vue'; // 调整路径
+import FirebaseSigninView from '@/components/FirebaseSigninView.vue'; 
 import { getAuth } from 'firebase/auth';
-import Register from '../components/Register.vue';                      // 调整路径
-import Login from '../components/Login.vue';                            // 调整路径
-import Service from '../components/Service.vue';                        // 调整路径
-import Comment from '../components/Comment.vue';                        // 调整路径
-import EmailForm from '../components/EmailForm.vue';                    // 调整路径
-import MapView from '../components/Map.vue';                            // 修正组件名称
-import TableComponent from '../components/TableComponent.vue';          // 添加 TableComponent
-import { createRouter, createWebHistory } from 'vue-router';            // 导入语句
+import { createRouter, createWebHistory } from 'vue-router'; 
 
-// 路由配置
 const routes = [
   {
-    path: '/',                                                          // 默认路径为 '/'
+    path: '/',
     name: 'Home',
-    component: () => import('@/components/Homepage.vue'),                    // 懒加载 Home 组件
+    component: () => import('@/components/Homepage.vue'), 
   },
   {
-    path: '/FireLogin',
-    name: 'FireLogin',
-    component: FirebaseSigninView,                                       // Firebase 登录视图
+    path: '/firebase-login',
+    name: 'FirebaseLogin',
+    component: () => import('@/components/FirebaseSigninView.vue'),
   },
   {
     path: '/register',
     name: 'Register',
-    component: Register,                                                 // 注册视图
+    component: () => import('@/components/Register.vue'),
   },
   {
     path: '/login',
     name: 'Login',
-    component: Login,                                                    // 登录视图
+    component: () => import('@/components/Login.vue'),
   },
   {
     path: '/service',
     name: 'Service',
-    component: Service,                                                  // 服务视图
+    component: () => import('@/components/Service.vue'),
+    meta: { requiresAuth: true }, // 需要身份验证
   },
   {
     path: '/comment',
     name: 'Comment',
-    component: Comment,                                                  // 评论视图
+    component: () => import('@/components/Comment.vue'),
   },
   {
     path: '/email',
     name: 'Email',
-    component: EmailForm,                                                // 邮件表单视图
+    component: () => import('@/components/EmailForm.vue'),
   },
   {
     path: '/map',
     name: 'Map',
-    component: MapView,                                                  // 地图视图
+    component: () => import('@/components/Map.vue'),
   },
   {
     path: '/table',
     name: 'Table',
-    component: TableComponent,                                           // 表格视图
+    component: () => import('@/components/TableComponent.vue'),
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/components/NotFound.vue'), // 404 页面
   }
 ];
 
-// 创建路由实例
 const router = createRouter({
   history: createWebHistory(),
   routes,
 });
 
-// 全局路由守卫
 router.beforeEach((to, from, next) => {
   const auth = getAuth();
   const user = auth.currentUser;
 
-  // 检查路由是否需要身份验证
   if (to.meta.requiresAuth && !user) {
-    next({ name: 'Login' });  // 如果用户未登录，重定向到登录页面
+    next({ name: 'Login' });
   } else {
-    next();  // 允许导航
+    next();
   }
 });
 
