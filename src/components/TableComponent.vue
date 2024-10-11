@@ -1,40 +1,58 @@
 <template>
-    <div>
-      <!-- Table 1 -->
-      <h2>Table 1: User Data</h2>
-      <div class="search-bar">
-        <span class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input type="text" pInputText placeholder="Search by ID or Name" v-model="userFilter" />
-        </span>
-      </div>
-      <DataTable :value="filteredUsers" paginator :rows="10">
-        <Column field="id" header="ID" sortable></Column>
-        <Column field="name" header="Name" sortable></Column>
-        <Column field="email" header="Email"></Column>
-      </DataTable>
-  
-      <!-- Table 2 -->
-      <h2>Table 2: Product Data</h2>
-      <div class="search-bar">
-        <span class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input type="text" pInputText placeholder="Search by Product ID or Name" v-model="productFilter" />
-        </span>
-      </div>
-      <DataTable :value="filteredProducts" paginator :rows="10">
-        <Column field="id" header="Product ID" sortable></Column>
-        <Column field="name" header="Product Name" sortable></Column>
-        <Column field="price" header="Price" sortable></Column>
-      </DataTable>
+  <div>
+    <!-- Table 1 -->
+    <h2>Table 1: User Data</h2>
+    <div class="search-bar">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input type="text" pInputText placeholder="Search by ID or Name" v-model="userFilter" />
+      </span>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref, computed } from 'vue';
-  import DataTable from 'primevue/datatable';
-  import Column from 'primevue/column';
-  import InputText from 'primevue/inputtext';
+    <DataTable :value="filteredUsers" paginator :rows="10">
+      <Column field="id" header="ID" sortable></Column>
+      <Column field="name" header="Name" sortable></Column>
+      <Column field="email" header="Email"></Column>
+    </DataTable>
+
+    <!-- Chart for Table 1 -->
+    <div>
+      <h3>User Count by Name</h3>
+      <BarChart :chart-data="userChartData" />
+    </div>
+
+    <!-- Table 2 -->
+    <h2>Table 2: Product Data</h2>
+    <div class="search-bar">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input type="text" pInputText placeholder="Search by Product ID or Name" v-model="productFilter" />
+      </span>
+    </div>
+    <DataTable :value="filteredProducts" paginator :rows="10">
+      <Column field="id" header="Product ID" sortable></Column>
+      <Column field="name" header="Product Name" sortable></Column>
+      <Column field="price" header="Price" sortable></Column>
+    </DataTable>
+
+    <!-- Chart for Table 2 -->
+    <div>
+      <h3>Product Prices</h3>
+      <BarChart :chart-data="productChartData" />
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import InputText from 'primevue/inputtext';
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import BarChart from './BarChart.vue'; // Import BarChart component
+
+// Register Chart.js components
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
+
   
   // 30 rows of User Data
   const users = ref([
@@ -104,11 +122,10 @@
     { id: 30, name: 'VR Headset', price: 400 }
   ]);
   
-// Individual filters
+// Filters and computed properties
 const userFilter = ref('');
 const productFilter = ref('');
 
-// Computed filtered lists
 const filteredUsers = computed(() => {
   return users.value.filter(user => {
     return (
@@ -125,6 +142,37 @@ const filteredProducts = computed(() => {
       product.name.toLowerCase().includes(productFilter.value.toLowerCase())
     );
   });
+});
+
+// Chart data for users and products
+const userChartData = computed(() => {
+  return {
+    labels: users.value.map(user => user.name),
+    datasets: [
+      {
+        label: 'Number of Users',
+        data: users.value.map(() => 1), // Each user counts as 1
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+});
+
+const productChartData = computed(() => {
+  return {
+    labels: products.value.map(product => product.name),
+    datasets: [
+      {
+        label: 'Price',
+        data: products.value.map(product => product.price),
+        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+        borderColor: 'rgba(153, 102, 255, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
 });
 </script>
 
