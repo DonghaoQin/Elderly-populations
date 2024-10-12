@@ -9,7 +9,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 
 // Import routing and components
 import { createRouter, createWebHistory } from 'vue-router';
-import Register from './components/Register.vue';
+import Register from './components/register.vue';  // Lowercase 'register.vue'
 import Login from './components/Login.vue';
 import Homepage from './components/Homepage.vue';  
 import Service from './components/Service.vue';    
@@ -37,7 +37,7 @@ const auth = getAuth(firebaseApp);
 // Setup Vue Router with routes
 const routes = [
   { path: '/', component: Homepage },  
-  { path: '/register', component: Register },
+  { path: '/register', component: Register },  // Lowercase 'register.vue'
   { path: '/login', component: Login },
   { path: '/service', component: Service, meta: { requiresAuth: true } },
   { path: '/comment', component: Comment, meta: { requiresAuth: true } }, 
