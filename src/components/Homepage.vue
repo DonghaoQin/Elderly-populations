@@ -158,7 +158,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: #003366; /* 更深的蓝色背景 */
+  background-color: #00661a; /* 更深的蓝色背景 */
 }
 
 .navbar-menu {
