@@ -150,6 +150,7 @@ export default {
 </script>
 
 
+<!-- 更新所有前景和背景颜色的对比度 -->
 <style scoped>
 /* Navigation Bar */
 .navbar {
@@ -157,7 +158,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: #ffffff;
+  background-color: #003366; /* 更深的蓝色背景 */
 }
 
 .navbar-menu {
@@ -166,11 +167,11 @@ export default {
 }
 
 .navbar-item {
-  color: #000000;
+  color: #ffffff;  /* 白色文字，确保高对比度 */
 }
 
 .button.is-primary {
-  background-color: #005b96; /* 修改为深蓝色以增强对比度 */
+  background-color: #0074D9; /* 深蓝色背景 */
   color: #ffffff;  /* 白色文字 */
   border-radius: 5px;
   padding: 10px 20px;
@@ -182,33 +183,34 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #4f81bd;  /* 修改为较深的蓝色背景 */
-  color: white;  /* 白色文字 */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  background-color: #00509E;  /* 深蓝色背景 */
+  color: #ffffff;  /* 白色文字，确保对比度 */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 增加阴影以增强可读性 */
 }
 
 /* API Data Section */
 .api-data {
   padding: 50px 20px;
-  background-color: #f9f9f9;
+  background-color: #F0F0F0;  /* 浅灰色背景 */
   text-align: center;
 }
 
 .api-title {
   font-size: 2rem;
   margin-bottom: 20px;
-  color: #333;
+  color: #333333;  /* 深灰色文字，确保高对比度 */
 }
 
 .api-description {
   font-size: 1.1rem;
   margin-bottom: 20px;
+  color: #333333;  /* 深灰色文字，确保高对比度 */
 }
 
 .loading-indicator {
   font-size: 1.5rem;
   text-align: center;
-  color: #999;
+  color: #666666;  /* 深灰色文字 */
 }
 
 ul {
@@ -219,35 +221,30 @@ ul {
 .post-item {
   margin-bottom: 20px;
   padding: 15px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #cccccc;
 }
 
 .post-item strong {
   font-size: 1.2rem;
-  color: #333;
+  color: #333333;  /* 深灰色文字 */
 }
 
 .post-item p {
   font-size: 1rem;
-  color: #666;
+  color: #666666;  /* 中灰色文字 */
 }
 
 .last-updated {
   font-size: 0.9rem;
-  color: #666;
+  color: #666666;  /* 中灰色文字 */
   text-align: right;
 }
 
 /* OpenAI Text Generator Section */
 .openai-section {
   padding: 50px 20px;
-  background-color: #f4f4f4;
+  background-color: #E0E0E0;  /* 浅灰色背景 */
   text-align: center;
-}
-
-.openai-title {
-  font-size: 2rem;
-  margin-bottom: 20px;
 }
 
 textarea {
@@ -256,35 +253,38 @@ textarea {
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc;
   font-size: 16px;
+  color: #333333;  /* 深灰色文字 */
 }
 
 button {
   padding: 10px 20px;
-  background-color: #4CAF50;
-  color: white;
+  background-color: #0074D9;  /* 深蓝色按钮 */
+  color: white;  /* 白色文字 */
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 button:disabled {
-  background-color: #ccc;
+  background-color: #cccccc; /* 禁用状态为浅灰色 */
 }
 
 button:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: #00509E;  /* 按钮悬停时变为深蓝色 */
 }
 
 p {
   margin-top: 20px;
   font-size: 18px;
+  color: #333333;  /* 深灰色文字 */
 }
 
 /* Footer Section */
 .footer {
-  background-color: #f0f2f5;
+  background-color: #333333;  /* 深灰色背景 */
+  color: #ffffff;  /* 白色文字，确保高对比度 */
   padding: 20px;
   text-align: center;
   margin-top: 40px;
