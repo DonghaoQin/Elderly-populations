@@ -10,7 +10,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 // Import routing and components
 import { createRouter, createWebHistory } from 'vue-router';
 import Register from './components/register.vue';  // Lowercase 'register.vue'
-import Login from './components/login.vue';  // Changed to lowercase 'login.vue'
+import Login from './components/login.vue';  // Use lowercase 'login.vue'
 
 import Homepage from './components/Homepage.vue';  
 import Service from './components/Service.vue';    
