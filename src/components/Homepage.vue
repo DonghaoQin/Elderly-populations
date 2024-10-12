@@ -1,25 +1,22 @@
 <template>
   <div>
     <!-- Navigation Bar -->
-    <!-- Navigation Bar -->
-<header class="navbar">
-  <div class="navbar-brand">
-    <h1>Elderly Populations</h1>
-  </div>
-  <nav class="navbar-menu">
-    <router-link to="/">Home</router-link>
-    <router-link to="/service">Services</router-link>
-    <router-link to="/comment">Comment</router-link>
-    <router-link to="/email">Send Email</router-link> <!-- Added Send Email Link -->
-    
-    <router-link v-if="!isAuthenticated" to="/login" class="navbar-item">Login</router-link>
-    <router-link v-if="!isAuthenticated" to="/map" class="navbar-item">Map</router-link> <!-- Map Button -->
-    <router-link v-if="!isAuthenticated" to="/table" class="navbar-item">Table</router-link> <!-- New Table Button -->
-    <router-link v-if="!isAuthenticated" to="/register" class="button is-primary">Get Started</router-link>
-    <button v-if="isAuthenticated" @click="logout" class="navbar-item">Logout</button>
-  </nav>
-</header>
-
+    <header class="navbar">
+      <div class="navbar-brand">
+        <h1>Elderly Populations</h1>
+      </div>
+      <nav class="navbar-menu">
+        <router-link to="/">Home</router-link>
+        <router-link to="/service">Services</router-link>
+        <router-link to="/comment">Comment</router-link>
+        <router-link to="/email">Send Email</router-link>
+        <router-link v-if="!isAuthenticated" to="/login" class="navbar-item">Login</router-link>
+        <router-link v-if="!isAuthenticated" to="/map" class="navbar-item">Map</router-link>
+        <router-link v-if="!isAuthenticated" to="/table" class="navbar-item">Table</router-link>
+        <router-link v-if="!isAuthenticated" to="/register" class="button is-primary">Get Started</router-link>
+        <button v-if="isAuthenticated" @click="logout" class="navbar-item">Logout</button>
+      </nav>
+    </header>
 
     <!-- Hero Section -->
     <section class="hero is-fullheight is-primary is-bold" style="background-color: #add8e6;">
@@ -57,23 +54,13 @@
       </div>
     </section>
 
-    <!-- OpenAI Text Generator Section -->
-    <section class="openai-section">
-      <div class="container">
-        <h2 class="openai-title">Generate Text with OpenAI</h2>
-        
-        <!-- 用户输入的提示词 -->
-        <textarea v-model="userInput" placeholder="Enter your prompt here"></textarea>
-
-        <!-- 点击生成按钮 -->
-        <button @click="generateTextFromGemini" :disabled="loadingOpenAI">Generate Text</button>
-
-
-        <!-- 显示生成的文本 -->
-        <div v-if="loadingOpenAI">Loading...</div>
-        <p v-if="generatedText">{{ generatedText }}</p>
-      </div>
-    </section>
+    <!-- Google AI Text Generator Section -->
+    <div class="openai-section">
+      <h1>Ask Google AI</h1>
+      <textarea v-model="userInput" placeholder="Ask a question..." rows="4"></textarea>
+      <button @click="analyzeText">Submit</button>
+      <p v-if="response">{{ response }}</p>
+    </div>
 
     <!-- Footer Section -->
     <footer class="footer">
@@ -85,96 +72,83 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 
-const router = useRouter();
-const isAuthenticated = ref(false);
-const posts = ref([]);
-const loading = ref(true);
-const lastUpdated = ref('');
-const userInput = ref('');
-const generatedText = ref('');
-const loadingOpenAI = ref(false);
+export default {
+  setup() {
+    const router = useRouter();
+    const isAuthenticated = ref(false);
+    const posts = ref([]);
+    const loading = ref(true);
+    const lastUpdated = ref('');
+    const userInput = ref('');
+    const response = ref(''); // Ensure response is defined
 
-// Helper function to generate a random number within a range
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
-}
+    // Function to fetch posts from API
+    const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
-onMounted(() => {
-  const user = localStorage.getItem('authenticatedUser');
-  isAuthenticated.value = !!user;
+    onMounted(() => {
+      const user = localStorage.getItem('authenticatedUser');
+      isAuthenticated.value = !!user;
 
-  // Generate a random number to request different posts each time
-  const randomStart = getRandomInt(1, 50); // Generate a random start index
-  const randomEnd = randomStart + 5; // Limit the number of posts
-
-  // Fetch data from the API with a random range of posts
-  axios.get(`https://jsonplaceholder.typicode.com/posts?_start=${randomStart}&_limit=5`)
-    .then(response => {
-      console.log('API Response:', response.data);  // Debug API data
-      posts.value = response.data;
-      lastUpdated.value = new Date().toLocaleString(); // Record the last updated time
-      loading.value = false;  // Data fetched, stop loading
-    })
-    .catch(error => {
-      console.error('Error fetching posts:', error);
-      loading.value = false;  // Even if there is an error, stop loading
+      const randomStart = getRandomInt(1, 50);
+      axios
+        .get(`https://jsonplaceholder.typicode.com/posts?_start=${randomStart}&_limit=5`)
+        .then((response) => {
+          posts.value = response.data;
+          lastUpdated.value = new Date().toLocaleString();
+          loading.value = false;
+        })
+        .catch((error) => {
+          console.error('Error fetching posts:', error);
+          loading.value = false;
+        });
     });
-});
 
-const generateTextFromGemini = async () => {
-  console.log('Generate Text button clicked!');  // 检查按钮是否触发函数
-  if (!userInput.value) {
-    console.warn('No input provided for the AI generation.');
-    return;
-  }
-
-  loadingOpenAI.value = true;
-  generatedText.value = '';  // 清除之前生成的文本
-  
+    // Function to analyze text using Google API
+    const analyzeText = async () => {
   try {
-    const response = await axios.post(
-      'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key=',  // 请确保API路径是正确的
-      {
-        prompt: {
-          text: userInput.value,  // 提供用户输入的提示
-        }
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      }
-    );
+    const apiKey = ''; // Replace with your actual Google API key
+    const url = `https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key=${apiKey}`;
 
-    console.log('Gemini API Response:', response.data);  // 输出 API 返回的数据
-    generatedText.value = response.data.candidates ? response.data.candidates[0].output : 'No output generated.';  // 正确处理输出
+    const requestBody = {
+      prompt: {
+        text: userInput.value, // The text input from the user
+      },
+    };
+
+    const result = await axios.post(url, requestBody);
+    response.value = result.data.candidates[0].output; // Extract and display the generated text
   } catch (error) {
-    console.error('Error fetching Gemini generated text:', error.response ? error.response.data : error.message);
-    generatedText.value = 'Error fetching Gemini generated text. Please try again later.';
-  } finally {
-    loadingOpenAI.value = false;
+    console.error('Error during API request:', error.response?.data || error);
+    response.value = 'Sorry, something went wrong.';
   }
 };
 
 
+    const logout = () => {
+      localStorage.removeItem('authenticatedUser');
+      isAuthenticated.value = false;
+      router.push('/');
+    };
 
-
-
-
-
-
-
-const logout = () => {
-  localStorage.removeItem('authenticatedUser');
-  isAuthenticated.value = false;
-  router.push('/');  // Redirect to homepage after logout
+    return {
+      userInput,
+      response, // Returning response so it's available in the template
+      posts,
+      loading,
+      lastUpdated,
+      analyzeText, // Correct function name returned here
+      logout,
+      isAuthenticated,
+    };
+  },
 };
 </script>
+
 
 <style scoped>
 /* Navigation Bar */
