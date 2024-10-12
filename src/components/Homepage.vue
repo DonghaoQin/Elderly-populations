@@ -170,8 +170,8 @@ export default {
 }
 
 .button.is-primary {
-  background-color: #f7eae8;
-  color: #333; 
+  background-color: #005b96; /* 修改为深蓝色以增强对比度 */
+  color: #ffffff;  /* 白色文字 */
   border-radius: 5px;
   padding: 10px 20px;
 }
@@ -182,7 +182,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  background-color: #4f81bd;  /* 修改为较深的蓝色背景 */
+  color: white;  /* 白色文字 */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
