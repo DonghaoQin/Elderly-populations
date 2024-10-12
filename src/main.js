@@ -1,52 +1,56 @@
-// Import the functions you need from the SDKs you need
+// Import the functions you need from the SDKs
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // Add Firestore import
 import { createApp } from 'vue';
 import App from './App.vue';
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+
+
+
 // Import routing and components
 import { createRouter, createWebHistory } from 'vue-router';
-import Register from './components/register.vue';  // Lowercase 'register.vue'
-import Login from './components/login.vue';  // Use lowercase 'login.vue'
+import Register from './components/register.vue';
+import Login from './components/login.vue';
+import Homepage from './components/Homepage.vue';
+import Service from './components/Service.vue';
+import Comment from './components/Comment.vue';
+import EmailForm from './components/EmailForm.vue';
+import MapView from './components/Map.vue';
+import TableComponent from './components/TableComponent.vue';
+import Admin from './components/Admin.vue';
 
-import Homepage from './components/Homepage.vue';  
-import Service from './components/Service.vue';    
-import Comment from './components/Comment.vue';    
-import EmailForm from './components/EmailForm.vue';  
-import MapView from './components/Map.vue';         
-import TableComponent from './components/TableComponent.vue'; 
-import Admin from './components/Admin.vue';  // Import Admin component
-
-// Firebase configuration
+// Firebase configuration from your screenshot
 const firebaseConfig = {
   apiKey: "AIzaSyDIRI3ZPjEgDefQWPbfV7zbGM_ZV36yBGI",
-  authDomain: "your-auth-domain",
-  projectId: "your-project-id",
-  storageBucket: "your-storage-bucket",
-  messagingSenderId: "your-messaging-sender-id",
-  appId: "your-app-id",
-  measurementId: "your-measurement-id"
+  authDomain: "ass3-f44ec.firebaseapp.com",
+  projectId: "ass3-f44ec",
+  storageBucket: "ass3-f44ec.appspot.com",
+  messagingSenderId: "64117293763",
+  appId: "1:64117293763:web:e2d7a6ec6e5a550d5b9876",
+  measurementId: "G-C46QQYD88G"
 };
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp); // Initialize Firestore
 
 // Setup Vue Router with routes
 const routes = [
-  { path: '/', component: Homepage },  
-  { path: '/register', component: Register },  // Lowercase 'register.vue'
+  { path: '/', component: Homepage },
+  { path: '/register', component: Register },
   { path: '/login', component: Login },
   { path: '/service', component: Service, meta: { requiresAuth: true } },
-  { path: '/comment', component: Comment, meta: { requiresAuth: true } }, 
-  { path: '/email', component: EmailForm },  
-  { path: '/map', component: MapView },      
-  { path: '/table', component: TableComponent }, 
+  { path: '/comment', component: Comment, meta: { requiresAuth: true } },
+  { path: '/email', component: EmailForm },
+  { path: '/map', component: MapView },
+  { path: '/table', component: TableComponent },
   { path: '/logout', component: Homepage },
-  { path: '/admin', component: Admin, meta: { requiresAdmin: true } }  // Add Admin route
+  { path: '/admin', component: Admin, meta: { requiresAdmin: true } }
 ];
 
 const router = createRouter({
@@ -63,12 +67,10 @@ app.mount('#app');
 // Firebase Authentication state listener
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User is signed in, check for admin role
     if (user.email === 'admin@gmail.com') {
-      router.push('/admin');  // Redirect to admin page for admin user
+      router.push('/admin');
     }
   } else {
-    // No user is signed in
     if (router.currentRoute.value.meta.requiresAuth) {
       router.push('/login');
     }
@@ -79,18 +81,17 @@ onAuthStateChanged(auth, (user) => {
 router.beforeEach((to, from, next) => {
   const user = auth.currentUser;
 
-  // Check if the route requires authentication
   if (to.matched.some(record => record.meta.requiresAuth) && !user) {
-    next('/login'); // Redirect to login if user is not authenticated
-  } 
-  // Check if the route requires admin privileges
-  else if (to.matched.some(record => record.meta.requiresAdmin)) {
+    next('/login');
+  } else if (to.matched.some(record => record.meta.requiresAdmin)) {
     if (user && user.email === 'admin@gmail.com') {
-      next(); // Allow navigation for admin
+      next();
     } else {
-      next('/login'); // Redirect to login if not an admin
+      next('/login');
     }
   } else {
-    next(); // Allow navigation for non-admin routes
+    next();
   }
 });
+
+export { db };  // Export the Firestore instance for use in other components
