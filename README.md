@@ -1,6 +1,6 @@
-<img width="414" alt="image" src="https://github.com/user-attachments/assets/90a8b550-3c0b-452a-8f7e-b836a6742259">
-1 网页的主界面：包含标题、一些主要的功能按钮、海报等
 
+1 网页的主界面：包含标题、一些主要的功能按钮、海报等
+<img width="414" alt="image" src="https://github.com/user-attachments/assets/90a8b550-3c0b-452a-8f7e-b836a6742259">
 2 注册页面：设有完整的输入验证机制
 
 
