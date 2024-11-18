@@ -1,35 +1,27 @@
-# NoMash-Library
+<img width="414" alt="image" src="https://github.com/user-attachments/assets/90a8b550-3c0b-452a-8f7e-b836a6742259">
+1 网页的主界面：包含标题、一些主要的功能按钮、海报等
 
-This template should help get you started developing with Vue 3 in Vite.
+2 注册页面：设有完整的输入验证机制
 
-## Recommended IDE Setup
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Customize configuration
+3 登录界面：将注册过的账号输入（其中输入管理员邮箱和密码可进入管理员界面）
+或者绑定谷歌邮箱进行登陆，也可以添加绑定微信等
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-## Project Setup
+4 服务页面，包含主要的服务内容
 
-```sh
-npm install
-```
+5 基础的评论功能
 
-### Compile and Hot-Reload for Development
+6 发送功能（邮箱），可发送多个邮箱，以及添加附件
 
-```sh
-npm run dev
-```
+7地图功能， 可实现定位和搜索、导航、3D显示等功能
 
-### Compile and Minify for Production
+8 表格功能，可以查看用户信息
 
-```sh
-npm run build
-```
+9 AI功能，嵌入了Open ai，可以回答一些问题
 
-### Lint with [ESLint](https://eslint.org/)
+10 管理员页面，可以对医生名单进行查看、添加和删除
 
-```sh
-npm run lint
-```
+11 自动获取新闻的API，刷新即可得到最新的新闻
+
